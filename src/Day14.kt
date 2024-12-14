@@ -1,18 +1,3 @@
-import kotlin.math.absoluteValue
-
-data class Point(val x: Int, val y: Int) {
-    operator fun plus(other: Point) = Point(x + other.x, y + other.y)
-    operator fun minus(other: Point) = Point(x - other.x, y - other.y)
-    fun manhattanDistance(other: Point) = (x - other.x).absoluteValue + (y - other.y).absoluteValue
-    fun modulus(other: Point) = Point(
-        (x % other.x).let { if (it < 0) it + other.x else it },
-        (y % other.y).let { if (it < 0) it + other.y else it }
-    )
-    override fun toString() = "($x, $y)"
-
-    constructor(input: String) : this(input.split(",")[0].toInt(), input.split(",")[1].toInt())
-}
-
 data class Robot(var point: Point, val velocity: Point)
 class Map(val size: Point, val robots: List<Robot>) {
     override fun toString() = buildString {
