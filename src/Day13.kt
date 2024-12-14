@@ -35,17 +35,17 @@ fun main() {
             // Cross the lines: https://de.wikipedia.org/wiki/Schnittpunkt
             // x1 = y1 = 0
 
-            val x2 = lowCostButton.x
-            val y2 = lowCostButton.y
+            val x2 = lowCostButton.x.toBigInteger()
+            val y2 = lowCostButton.y.toBigInteger()
 
-            val x3 = price.x
-            val y3 = price.y
+            val x3 = price.x.toBigInteger()
+            val y3 = price.y.toBigInteger()
 
-            val x4 = price.x - highCostButton.x
-            val y4 = price.y - highCostButton.y
+            val x4 = price.x.toBigInteger() - highCostButton.x.toBigInteger()
+            val y4 = price.y.toBigInteger() - highCostButton.y.toBigInteger()
 
             val denominator = (x2 * (y4 - y3) - y2 * (x4 - x3))
-            if (denominator == 0L) {
+            if (denominator == 0L.toBigInteger()) {
                 throw IllegalStateException("parallel button directions")
             }
 
@@ -60,13 +60,13 @@ fun main() {
                 return@forEach
             }
 
-            if (s_x < 0 || s_x > price.x || s_y < 0 || s_y > price.y) {
+            if (s_x < 0.toBigInteger() || s_x > price.x.toBigInteger() || s_y < 0.toBigInteger() || s_y > price.y.toBigInteger()) {
                 return@forEach
             }
 
-            val cost =
-                lowCostButton.cost * (s_x / lowCostButton.x) + highCostButton.cost * (price.y - s_y) / highCostButton.y
-            totalTokens += cost
+            val cost = lowCostButton.cost.toBigInteger() * (s_x / lowCostButton.x.toBigInteger()) +
+                    highCostButton.cost.toBigInteger() * (price.y.toBigInteger() - s_y) / highCostButton.y.toBigInteger()
+            totalTokens += cost.toLong()
         }
         return totalTokens
     }
@@ -81,8 +81,9 @@ fun main() {
             readInput("Day13_test").toMachines()
                 .onEach { it.price = Price(it.price.x + 10000000000000L, it.price.y + 10000000000000L) })
             .also { check(it < 85132304518943L, { "total tokens $it" }) }
+            .also { check(it > 875318608908L, { "total tokens $it" }) }
 
     }
-    part1().println()
+    //part1().println()
     part2().println()
 }
