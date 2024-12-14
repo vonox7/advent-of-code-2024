@@ -1,6 +1,9 @@
+import kotlin.math.absoluteValue
+
 data class Point(val x: Int, val y: Int) {
     operator fun plus(other: Point) = Point(x + other.x, y + other.y)
     operator fun minus(other: Point) = Point(x - other.x, y - other.y)
+    fun manhattanDistance(other: Point) = (x - other.x).absoluteValue + (y - other.y).absoluteValue
     fun modulus(other: Point) = Point(
         (x % other.x).let { if (it < 0) it + other.x else it },
         (y % other.y).let { if (it < 0) it + other.y else it }
@@ -48,14 +51,18 @@ class Map(val size: Point, val robots: List<Robot>) {
     )
 }
 
-fun main() {
-    val map = Map(Point(101, 103), readInput("Day14_test").map { line ->
-        val sections = line.split(" ")
-        Robot(point=Point(sections[0].removePrefix("p=")), velocity=Point(sections[1].removePrefix("v=")))
-    })
-    println(map)
+fun lineToRobot(line: String): Robot {
+    return Robot(
+        point = Point(line.split(" ")[0].removePrefix("p=")),
+        velocity = Point(line.split(" ")[1].removePrefix("v="))
+    )
+}
 
+fun main() {
     fun part1(): Int {
+        val map = Map(Point(101, 103), readInput("Day14_test").map { lineToRobot(it) })
+
+
         repeat(100) {
             map.tick()
         }
@@ -66,7 +73,29 @@ fun main() {
     }
 
     fun part2(): Int {
-        return 0
+        val map = Map(Point(101, 103), readInput("Day14_test").map { lineToRobot(it) })
+
+        var tick = 0
+        while (true) {
+            tick += 1
+            map.tick()
+
+            // Basic entropy detection
+            var neighborCount = 0
+            map.robots.forEach { robot ->
+                map.robots.forEach { otherRobot ->
+                    if (robot != otherRobot && robot.point.manhattanDistance(otherRobot.point) <= 2) {
+                        neighborCount += 1
+                    }
+                }
+            }
+            //println("tick $tick has $neighborCount neighbors")
+            if (neighborCount > 1000) { // 1000 feels good enough, first ticks have ~300 neighbors
+                println(map)
+                println("tick $tick has $neighborCount neighbors")
+                return tick
+            }
+        }
     }
 
     part1().println()
